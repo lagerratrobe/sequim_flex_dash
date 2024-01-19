@@ -13,7 +13,7 @@ library(dplyr)
 source("utils.R")
 ```
 
-Column {.sidebar}
+Inputs {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r}
@@ -36,8 +36,9 @@ datasetInput <- reactive({
 })
 ```
 
-Column
+Row {data-height=800}
 -----------------------------------------------------------------------
+
 ```{r}
 
 dataPlot <- reactive({
@@ -49,7 +50,8 @@ renderPlot({
 })
 ```
 
-### All Variables
+Row {data-height=200}
+-----------------------------------------------------------------------
 
 ```{r}
 # renderDT(rownames = FALSE,

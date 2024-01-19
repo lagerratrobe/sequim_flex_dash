@@ -41,6 +41,7 @@ getPlot <- function(weather_data, weather_variable) {
     
     plot = ggplot(weather_data, mapping = aes(x=Time, y=.data[[weather_variable]])) + 
       geom_line() +
+      #ylim(25, 45) +
       # Max temp line
       geom_hline(yintercept=max(max_temp),color="red") +
       annotate("text",
