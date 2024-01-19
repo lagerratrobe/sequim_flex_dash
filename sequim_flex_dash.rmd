@@ -1,6 +1,8 @@
 ---
 title: "Last 48 Hours of Sequim Weather"
-output: flexdashboard::flex_dashboard
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
 runtime: shiny
 ---
 
@@ -13,7 +15,7 @@ library(dplyr)
 source("utils.R")
 ```
 
-Inputs {.sidebar}
+Input {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r}
@@ -36,8 +38,8 @@ datasetInput <- reactive({
 })
 ```
 
-Row {data-height=800}
------------------------------------------------------------------------
+Row
+------------------------------------------------------------------
 
 ```{r}
 
@@ -50,8 +52,8 @@ renderPlot({
 })
 ```
 
-Row {data-height=200}
------------------------------------------------------------------------
+Row
+-------------------------------------------------------------
 
 ```{r}
 # renderDT(rownames = FALSE,
