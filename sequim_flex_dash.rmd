@@ -1,0 +1,71 @@
+---
+title: "Last 48 Hours of Sequim Weather"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+library(shiny)
+library(ggplot2)
+library(DT)
+library(dplyr)
+source("utils.R")
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+# Get the data 
+df <- getData()
+
+# Create a selector
+weather_vars <- c( "UV", "Humidity", "Temperature", "Pressure", "Precip")
+
+selectInput(inputId = "variable",
+            label = h4("Choose Variable to Plot"),
+            choices = c("Temperature", "Precip"),
+            selected = "Temperature")
+
+# Reactive data based on selector input
+datasetInput <- reactive({
+  select(df, 
+         input$variable,
+         Time)
+})
+```
+
+Column
+-----------------------------------------------------------------------
+```{r}
+
+dataPlot <- reactive({
+  getPlot( df, input$variable )
+})
+
+renderPlot({
+  dataPlot()
+})
+```
+
+### All Variables
+
+```{r}
+# renderDT(rownames = FALSE,
+#          server = FALSE,
+#          options = list(bPaginate = FALSE, 
+#                         dom = 't',
+#                         ordering=F,
+#                         scrollY = "350px"), 
+#          {cleanSeattleWeather(weather_data()) %>% arrange(desc("Time")) %>%
+#              mutate("Time" = as.character(`Time`))
+#          })
+
+# DT table section
+renderTable({
+  mutate(df, 
+         Time = as.character(Time)
+  )
+})
+```
