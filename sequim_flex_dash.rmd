@@ -38,7 +38,7 @@ datasetInput <- reactive({
 })
 ```
 
-Row
+Row {style="height:80pc;"}
 ------------------------------------------------------------------
 
 ```{r}
@@ -56,20 +56,13 @@ Row
 -------------------------------------------------------------
 
 ```{r}
-# renderDT(rownames = FALSE,
-#          server = FALSE,
-#          options = list(bPaginate = FALSE, 
-#                         dom = 't',
-#                         ordering=F,
-#                         scrollY = "350px"), 
-#          {cleanSeattleWeather(weather_data()) %>% arrange(desc("Time")) %>%
-#              mutate("Time" = as.character(`Time`))
-#          })
-
-# DT table section
-renderTable({
-  mutate(df, 
-         Time = as.character(Time)
-  )
-})
+renderDT(rownames = FALSE,
+         server = FALSE,
+         options = list(bPaginate = FALSE,
+                        dom = 't',
+                        ordering=F,
+                        scrollY = "350px"),
+         {df %>% arrange(desc("Time")) %>%
+             mutate("Time" = as.character(`Time`))
+         })
 ```
