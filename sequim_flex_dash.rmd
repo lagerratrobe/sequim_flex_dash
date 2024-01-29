@@ -1,5 +1,5 @@
 ---
-title: "Last 48 Hours of Sequim Weather"
+title: "Last 48 Hours of  Weather"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
