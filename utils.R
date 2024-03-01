@@ -1,5 +1,6 @@
 library(dplyr, warn.conflicts = FALSE)
 library(lubridate, warn.conflicts = FALSE)
+library(stringr, warn.conflicts = FALSE)
 
 # Read in the entire data and convert obsTimeLocal to POSIXct data type
 getData <- function() {
@@ -24,8 +25,10 @@ getData <- function() {
 
 
 
-getPlot <- function(weather_data, weather_variable) {
+getPlot <- function(weather_data, weather_variable, city_name) {
+    city_name <- str_split_1(city_name, ",")[1]
     if (weather_variable == "Temperature") {
+    title_string <- sprintf("Last 48 Hours of %s Temperature", city_name)
     # Useful vars to use in plotting
     max_temp = max(weather_data[[weather_variable]])
     min_temp = min(weather_data[[weather_variable]])
@@ -65,19 +68,20 @@ getPlot <- function(weather_data, weather_variable) {
                label="Midnight",
                color="grey35") +
       # Plot title and axis labels
-      ggtitle("Last 48 Hours of Temperature") +
+      ggtitle(title_string) +
       theme(plot.title = element_text(hjust = 0.5, size = 28)) +
       labs(x = "Time",
            y = "Temperature")
   }
   if (weather_variable == "Precip") {
+    title_string <- sprintf("Last 48 Hours of %s Precip", city_name)
     total_precip = getTotalPrecip(weather_data)[[1]]
     time_midpoint = weather_data$Time[24]
     midnight = getMidnight(weather_data)
     plot = ggplot(weather_data, mapping = aes(x=Time, y=.data[[weather_variable]])) +
       geom_line() +
       # Plot Title
-      ggtitle("Last 48 Hours of Precip") +
+      ggtitle(title_string) +
       theme(plot.title = element_text(hjust = 0.5, size = 28)) +
       # Total Precip label
       annotate("text",

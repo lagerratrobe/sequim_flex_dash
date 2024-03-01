@@ -37,7 +37,7 @@ station_vars <- list(
   "Dallas, TX" = "KTXDALLA724",
   "Seattle, WA" = "KWASEATT2743", 
   "Sequim, WA" = "KWASEQUI431", 
-  "Westmount (Montreal), CAN" = "IWESTMOU2"
+  "Montreal, CAN" = "IWESTMOU2"
 )
 
 selectInput(inputId = "stationID",
@@ -64,7 +64,7 @@ Row
 ```{r}
 
 dataPlot <- reactive({
-  getPlot( data(), input$variable )
+  getPlot( data(), input$variable, input$stationID )
 })
 
 renderPlot({
