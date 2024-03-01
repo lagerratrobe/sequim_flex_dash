@@ -5,7 +5,6 @@ library(lubridate, warn.conflicts = FALSE)
 getData <- function() {
   df <- readRDS(
     url("https://github.com/lagerratrobe/weather_station/raw/main/Data/station_obs.RDS")) |> 
-    filter(stationID == "KWASEQUI431") |>
     mutate(stationID,
            "Time" = lubridate::parse_date_time(
              obsTimeLocal,
@@ -19,9 +18,7 @@ getData <- function() {
            "SolarWatts" = solarRadiation,
            "Humidity" = humidity,
            "Pressure" = imperial.pressure,
-           .keep = "none") |>
-    arrange(desc(Time)) %>% 
-    head(n=48)
+           .keep = "none")
   return(df)
 }
 
@@ -32,7 +29,6 @@ getPlot <- function(weather_data, weather_variable) {
     # Useful vars to use in plotting
     max_temp = max(weather_data[[weather_variable]])
     min_temp = min(weather_data[[weather_variable]])
-    #max_temp_time = weather_data$Time[which(weather_data[[weather_variable]] == max_temp)]
     max_temp_time = weather_data$Time[24]
     min_temp_time = weather_data$Time[44] # hard-code to lower left
     time_now = weather_data$Time[2] # Back up one to move label left
@@ -41,7 +37,6 @@ getPlot <- function(weather_data, weather_variable) {
     
     plot = ggplot(weather_data, mapping = aes(x=Time, y=.data[[weather_variable]])) + 
       geom_line() +
-      #ylim(25, 45) +
       # Max temp line
       geom_hline(yintercept=max(max_temp),color="red") +
       annotate("text",
