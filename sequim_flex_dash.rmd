@@ -12,11 +12,20 @@ library(shiny)
 library(ggplot2)
 library(DT)
 library(dplyr)
+library(data.table)
 source("utils.R")
 ```
 
 Input {.sidebar}
 -----------------------------------------------------------------------
+
+```{r}
+downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
+     tags$a(id = outputId, class = paste("btn btn-default shiny-download-link", 
+        class), href = "", target = "_blank", download = NA, 
+        icon("download"), label, ...)
+ }
+```
 
 ```{r}
 # Get the data 
@@ -56,6 +65,21 @@ data <- reactive({
     arrange(desc(Time)) |> 
     head(n=48)
 })
+
+# Create a download link "Seattle_weather_data-2024-03-01.csv"
+downloadLink('downloadData', 'Download CSV')
+output$downloadData <- downloadHandler(
+  filename = function() {
+    paste(str_split_1(input$stationID, ",")[1],
+          '_weather_data-', 
+          Sys.Date(), 
+          '.csv', 
+          sep='')
+  },
+  content = function(con) {
+    fwrite(data(), con)
+  }
+)
 ```
 
 Row
@@ -85,4 +109,5 @@ renderDT(rownames = FALSE,
          {data() %>% arrange(desc("Time")) %>%
              mutate("Time" = as.character(`Time`))
          })
+
 ```
