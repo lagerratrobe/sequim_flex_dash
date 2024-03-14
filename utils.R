@@ -5,7 +5,14 @@ library(stringr, warn.conflicts = FALSE)
 # Read in the entire data and convert obsTimeLocal to POSIXct data type
 getData <- function() {
   df <- readRDS(
-    url("https://github.com/lagerratrobe/weather_station/raw/main/Data/station_obs.RDS")) |> 
+    url("https://github.com/lagerratrobe/weather_station/raw/main/Data/station_obs.RDS")) |>
+    filter(stationID %in% c("KNYALBAN124",
+                            "KTNANTIO26",
+                            "KTXDALLA724",
+                            "KWASEATT2743",
+                            "KWASEQUI431", 
+                            "IWESTMOU2")
+           ) |>
     mutate(stationID,
            "Time" = lubridate::parse_date_time(
              obsTimeLocal,
@@ -23,6 +30,26 @@ getData <- function() {
   return(df)
 }
 
+cleanDupeTimes <- function(df) {
+  # Groups the data by station, date and hour
+  # Removes extra midnight entry in Dallas data
+  df |> group_by( stationID,
+                  Date = date(Time),
+                  Hour = hour(Time)
+  ) |> 
+    summarise(Temperature = mean(Temperature, na.rm = TRUE),
+              Precip = mean(Precip, na.rm = TRUE),
+              SolarWatts = mean(SolarWatts, na.rm = TRUE),
+              Humidity = mean(Humidity, na.rm = TRUE),
+              Pressure = mean(Pressure, na.rm = TRUE),
+              .groups = "drop"
+    ) |> 
+    mutate(Time = ymd_hm( sprintf("%s %s:00", Date, Hour) )
+    ) |> 
+    arrange(Time) |>
+    select(-`Date`, -`Hour`) -> df
+  return(df)
+}
 
 
 getPlot <- function(weather_data, weather_variable, city_name) {
