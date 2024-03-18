@@ -13,6 +13,7 @@ library(ggplot2)
 library(DT)
 library(dplyr)
 library(data.table)
+library(plotly)
 source("utils.R")
 ```
 
@@ -93,7 +94,7 @@ dataPlot <- reactive({
   getPlot( data(), input$variable, input$stationID )
 })
 
-renderPlot({
+renderPlotly({
   dataPlot()
 })
 ```
